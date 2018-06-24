@@ -2,6 +2,7 @@ package me.amanj.emr.log.viewer
 
 import java.io.File
 import io.S3Objects
+import io.Implicits._
 
 object Main {
 
@@ -10,17 +11,18 @@ object Main {
     val clusterId: String = ???
     val s3Bucket: String = ???
     val dest: String = ???
-    val / = System.lineSeparator()
 
     S3Objects.ls(s3Bucket, clusterId).foreach { key =>
       val relativePath =
         key
-          .replaceAll(s"^$s3Bucket/$clusterId/", "")
-          .replaceAll("/", if (/ == "\\") "\\\\" else /)
+          .replace(s3Bucket / clusterId, "")
+          .platformIndependentPath
 
-      val directoryPath = relativePath.substring(0, relativePath.lastIndexOf(/))
-      new File(s"$dest$/$clusterId$directoryPath").mkdirs()
-      S3Objects.download(s3Bucket, clusterId, s"$dest$/$clusterId$relativePath")
+      val directoryPath = relativePath.parentDirecotry
+
+      new File(dest / clusterId / directoryPath).mkdirs()
+
+      S3Objects.download(s3Bucket, clusterId, dest / clusterId / relativePath)
     }
   }
 }
