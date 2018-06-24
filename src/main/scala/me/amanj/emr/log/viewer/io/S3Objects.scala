@@ -9,8 +9,8 @@ import scala.collection.JavaConverters._
 object S3Objects {
   val s3Client = AmazonS3ClientBuilder.defaultClient()
 
-  def ls(key: String): Seq[String] = {
-    s3Client.listObjects(key).getObjectSummaries.asScala.map(a => a.getKey)
+  def ls(bucket: String, prefix: String): Seq[String] = {
+    s3Client.listObjects(bucket, prefix).getObjectSummaries.asScala.map(a => a.getKey)
   }
 
   def download(bucket: String, key: String, dest: String): Unit = {
