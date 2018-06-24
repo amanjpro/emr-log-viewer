@@ -18,9 +18,9 @@ object S3Objects {
   private[this] val PAGINATION_SIZE = 100
 
   @tailrec
-  private[this] def ls(request: ListObjectsV2Request, acc: Vector[S3ObjectSummary]): Vector[S3ObjectSummary] = {
+  private[this] def ls(request: ListObjectsV2Request, acc: Iterator[S3ObjectSummary]): Iterator[S3ObjectSummary] = {
     val result = s3Client.listObjectsV2(request)
-    val objects: Vector[S3ObjectSummary] = acc ++ result.getObjectSummaries.asScala.toVector
+    val objects: Iterator[S3ObjectSummary] = acc ++ result.getObjectSummaries.asScala.toVector
     if(result.isTruncated) {
       request.setContinuationToken(result.getContinuationToken)
       ls(request, objects)
@@ -29,22 +29,22 @@ object S3Objects {
     }
   }
 
-  private[this] def allKeys(bucket: String, prefix: String, acc: Seq[String]): Seq[String] = {
+  private[this] def allKeys(bucket: String, prefix: String, acc: Iterator[String]): Iterator[String] = {
     val request = new ListObjectsV2Request()
       .withBucketName(bucket)
       .withPrefix(prefix)
       .withMaxKeys(PAGINATION_SIZE)
 
-    val objects = ls(request, Vector.empty)
+    val objects = ls(request, Iterator.empty)
 
     objects.flatMap { obj =>
-      if(s3Client.doesObjectExist(bucket, obj.getKey)) Vector(obj.getKey)
-      else allKeys(bucket, obj.getKey, Vector.empty)
+      if(s3Client.doesObjectExist(bucket, obj.getKey)) Iterator(obj.getKey)
+      else allKeys(bucket, obj.getKey, Iterator.empty)
     }
   }
 
-  def ls(bucket: String, prefix: String): Seq[String] = {
-    allKeys(bucket, prefix, Vector.empty)
+  def ls(bucket: String, prefix: String): Iterator[String] = {
+    allKeys(bucket, prefix, Iterator.empty)
   }
 
   def download(bucket: String, key: String, dest: String): Unit = {
