@@ -4,7 +4,7 @@ import java.io.{File, PrintWriter}
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.amazonaws.services.s3.model.{ListObjectsV2Request, ListObjectsV2Result, S3ObjectSummary}
+import com.amazonaws.services.s3.model.{ListObjectsV2Request, S3ObjectSummary}
 
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
