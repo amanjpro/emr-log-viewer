@@ -2,7 +2,7 @@ package me.amanj.emr.log.viewer.io
 
 import java.io.{File, PrintWriter}
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.{AWSCredentials, AWSCredentialsProvider}
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.{ListObjectsV2Request, S3ObjectSummary}
 import me.amanj.emr.log.viewer.config.Config
@@ -10,10 +10,19 @@ import me.amanj.emr.log.viewer.config.Config
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 
-object S3Objects {
-  val s3Client = AmazonS3ClientBuilder.standard()
-      .withCredentials(new ProfileCredentialsProvider())
-      .withRegion("clientRegion")
+class S3Client(config: Config) {
+  @transient val s3Client = AmazonS3ClientBuilder.standard()
+      .withCredentials(new AWSCredentialsProvider {
+        override def getCredentials(): AWSCredentials = {
+          new AWSCredentials {
+            override def getAWSAccessKeyId: String = config.accessKey
+
+            override def getAWSSecretKey: String = config.secretKey
+          }
+        }
+        override def refresh(): Unit = { }
+      })
+      .withRegion(config.s3Region)
       .build();
 
   @tailrec

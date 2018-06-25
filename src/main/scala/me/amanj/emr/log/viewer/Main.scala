@@ -3,7 +3,7 @@ package me.amanj.emr.log.viewer
 import java.io.File
 
 import config.{Config, FileConfig}
-import io.S3Objects
+import io.S3Client
 import io.Implicits._
 
 import scala.concurrent.Future
@@ -13,20 +13,21 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     val config = FileConfig.loadConfig()
-    downloadClusterLogs(config)
+    val s3Client = new S3Client(config)
+    downloadClusterLogs(s3Client, config)
   }
 
-  def downloadClusterLogs(config: Config): Unit = {
+  def downloadClusterLogs(s3Client: S3Client, config: Config): Unit = {
     val nodeFuture = Future[Unit] {
-      S3Objects.ls(config.s3Bucket, config.s3ClusterId / "node", config).foreach(downloadDirectory(_, config))
+      s3Client.ls(config.s3Bucket, config.s3ClusterId / "node", config).foreach(downloadDirectory(_, s3Client, config))
     }
 
     val stepsFuture = Future[Unit] {
-      S3Objects.ls(config.s3Bucket, config.s3ClusterId / "steps", config).foreach(downloadDirectory(_, config))
+      s3Client.ls(config.s3Bucket, config.s3ClusterId / "steps", config).foreach(downloadDirectory(_, s3Client, config))
     }
 
     val containersFuture = Future[Unit]{
-      S3Objects.ls(config.s3Bucket, config.s3ClusterId / "containers", config).foreach(downloadDirectory(_, config))
+      s3Client.ls(config.s3Bucket, config.s3ClusterId / "containers", config).foreach(downloadDirectory(_, s3Client, config))
     }
 
     // old school busy waiting, I believe this is safer than waiting for n time and hoping
@@ -36,7 +37,7 @@ object Main {
       !nodeFuture.isCompleted) {}
   }
 
-  def downloadDirectory(key: String, config: Config): Unit = {
+  def downloadDirectory(key: String, s3Client: S3Client, config: Config): Unit = {
 
     val relativePath =
       key
@@ -47,6 +48,6 @@ object Main {
 
     new File(config.destination / config.s3ClusterId / directoryPath).mkdirs()
 
-    S3Objects.download(config.s3Bucket, config.s3ClusterId, config.destination / config.s3ClusterId / relativePath)
+    s3Client.download(config.s3Bucket, config.s3ClusterId, config.destination / config.s3ClusterId / relativePath)
   }
 }
