@@ -14,6 +14,7 @@ object Constants {
   val accessKeyPropertiesKey = "elv.s3.access.key"
   val secretKeyPropertiesKey = "elv.s3.secret.key"
   val bucketPropertiesKey = "elv.s3.emr.bucket"
+  val regionPropertiesKey = "elv.s3.emr.region"
   val clusterIdPropertiesKey = "elv.s3.emr.cluster.id"
   val destinationPropertiesKey = "elv.s3.emr.destination"
   val paginationPropertiesKey = "elv.file.download.pagination"

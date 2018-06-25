@@ -38,6 +38,10 @@ object FileConfig {
           logger.log(Level.SEVERE, unsetPropertyMessage(Constants.bucketPropertiesKey))
           throw new BadConfigException(unsetPropertyMessage(Constants.bucketPropertiesKey))
         },
+        s3Region = properties.getOr[Nothing](Constants.regionPropertiesKey) {
+          logger.log(Level.SEVERE, unsetPropertyMessage(Constants.regionPropertiesKey))
+          throw new BadConfigException(unsetPropertyMessage(Constants.regionPropertiesKey))
+        },
 
         // defaults available
         fileDownloadPagination = properties.getWithDefault(Constants.paginationPropertiesKey)
