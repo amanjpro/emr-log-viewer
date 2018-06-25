@@ -34,7 +34,7 @@ object FileConfig {
           val key = Constants.paginationPropertiesKey
           logger.warning(
             s"Warning $key should be set to an integer value, ${properties.getProperty(key)} is not an integer value")
-          Constants.DownloadPagination
+          Constants.DefaultDownloadPagination
         },
         destination = properties.getProperty(Constants.destinationPropertiesKey),
       )

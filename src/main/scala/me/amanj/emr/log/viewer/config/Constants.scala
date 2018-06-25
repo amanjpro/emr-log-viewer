@@ -1,7 +1,7 @@
 package me.amanj.emr.log.viewer.config
 
 object Constants {
-  @transient val DownloadPagination = 100
+  @transient val DefaultDownloadPagination = 100
 
   // App properties
   val appName = "elv"
