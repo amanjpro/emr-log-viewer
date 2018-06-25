@@ -1,7 +1,10 @@
 package me.amanj.emr.log.viewer.config
 
+import me.amanj.emr.log.viewer.io.Implicits._
+
 object Constants {
   @transient val DefaultDownloadPagination = 100
+  @transient val DefaultDownloadDestination = "user.home" / s".${Constants.appName}" / "cache"
 
   // App properties
   val appName = "elv"
