@@ -44,7 +44,7 @@ object S3Objects {
   }
 
   def ls(bucket: String, prefix: String, config: Config): Iterator[String] = {
-    allKeys(bucket, prefix, Iterator.empty, config.paginationSize)
+    allKeys(bucket, prefix, Iterator.empty, config.fileDownloadPagination)
   }
 
   def download(bucket: String, key: String, dest: String): Unit = {
