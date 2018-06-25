@@ -5,7 +5,7 @@ import java.io.{File, PrintWriter}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.{ListObjectsV2Request, S3ObjectSummary}
-import me.amanj.emr.log.viewer.me.amanj.emr.log.viewer.config.Config
+import me.amanj.emr.log.viewer.config.Config
 
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
