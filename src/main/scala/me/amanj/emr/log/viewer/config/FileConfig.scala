@@ -6,6 +6,7 @@ import java.util.logging.Level
 
 import me.amanj.emr.log.viewer.io.Implicits._
 import me.amanj.emr.log.viewer.Logger.logger
+import scala.collection.JavaConverters._
 
 import scala.util.Try
 
@@ -22,6 +23,8 @@ object FileConfig {
     val input = new FileInputStream(
       System.getProperty("user.home") / s".${Constants.appName}" / Constants.propertiesFile)
     properties.load(input)
+    properties.stringPropertyNames().asScala.filter(p => p.endsWith("access.key") || p.endsWith("secret.key"))
+      .partition(_.endsWith("access.key"))
 
     Instance = Some {
       Config(
